@@ -1,0 +1,76 @@
+/* StatsDashboard.css */
+.stats-card {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border-color-light);
+}
+
+.custom-lc-btn {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.custom-lc-btn:hover {
+    transform: translateY(-2px);
+    color: white;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.lc-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 1rem;
+}
+
+.lc-stat-box {
+    background: var(--bg-color-secondary-light);
+    border: 1px solid var(--border-color-light);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    text-align: center;
+}
+
+.lc-stat-box h5 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.lc-stat-box h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 800;
+}
+
+.lc-stat-box.total {
+    grid-column: 1 / -1;
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.lc-stat-box.easy h2 {
+    color: #10b981;
+}
+
+.lc-stat-box.medium h2 {
+    color: #f59e0b;
+}
+
+.lc-stat-box.hard h2 {
+    color: #ef4444;
+}
+
+.lc-input:focus {
+    background: var(--bg-color-secondary-light);
+    color: var(--text-primary-light);
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25);
+}
+
+.dark .lc-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}

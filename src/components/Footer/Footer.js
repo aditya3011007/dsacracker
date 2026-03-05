@@ -1,59 +1,61 @@
 import React from "react";
-import Badge from "react-bootstrap/Badge";
 import { Link } from "react-router-dom";
-import "./footer.css";
-export default function Footer({ dark, setDark }) {
+
+export default function Footer() {
 	return (
-		<div>
-			<footer className="footer" style={{ backgroundColor: dark ? "red" : "aqua" }}>
-				<div className="d-flex bd-highlight">
-					<div className="p-2 bd-highlight">
-						<a href="/">
-							<h4>
-								<Badge pill variant="light" className="hvr-grow">
-									<span role="img" aria-label="star" className="emojiFix">
-										⭐
-									</span>{" "}
-									Tap to Reload
-								</Badge>
-							</h4>
-						</a>
-					</div>
-					<div className="ml-auto p-2 bd-highlight footer-toggle">
-						<h4>
-							{/* toggle dark mode */}
-							<Badge
-								pill
-								variant="light"
-								className="hvr-grow"
-								onClick={() => {
-									setDark(!dark);
-									window.localStorage["isDark"] = !dark;
-								}}
-								style={{ cursor: "pointer" }}
-							>
-								{dark ? (
-									<span role="img" aria-label="sun-emoji" className="emojiFix">
-										☀️
-									</span>
-								) : (
-									<span role="img" aria-label="moon-emoji" className="emojiFix">
-										🌙
-									</span>
-								)}
-							</Badge>{" "}
-							<Link to="/about">
-								<Badge pill variant="light" className="hvr-grow">
-									About{" "}
-									<span role="img" aria-label="face-with-monocole" className="emojiFix">
-										🧐
-									</span>
-								</Badge>
-							</Link>
-						</h4>
-					</div>
-				</div>
-			</footer>
-		</div>
+		<footer
+			className="footer"
+			style={{
+				padding: "2rem 1rem",
+				borderTop: "1px solid var(--border-color-light)",
+				marginTop: "auto",
+				display: "flex",
+				justifyContent: "space-between",
+				alignItems: "center",
+				flexWrap: "wrap",
+				gap: "1rem"
+			}}
+		>
+			<div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+				<a
+					href="/"
+					style={{
+						color: 'var(--text-secondary-light)',
+						textDecoration: 'none',
+						fontWeight: '500',
+						fontSize: '0.95rem',
+						transition: 'color 0.2s'
+					}}
+					onMouseOver={(e) => e.currentTarget.style.color = 'var(--text-primary-light)'}
+					onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary-light)'}
+				>
+					<span role="img" aria-label="home" className="mr-2">🏠</span> Home
+				</a>
+				<Link
+					to="/about"
+					style={{
+						color: 'var(--text-secondary-light)',
+						textDecoration: 'none',
+						fontWeight: '500',
+						fontSize: '0.95rem',
+						transition: 'color 0.2s'
+					}}
+					onMouseOver={(e) => e.currentTarget.style.color = 'var(--text-primary-light)'}
+					onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary-light)'}
+				>
+					<span role="img" aria-label="about" className="mr-2">ℹ️</span> About & Settings
+				</Link>
+			</div>
+
+			<div
+				style={{
+					color: 'var(--text-secondary-light)',
+					fontSize: '0.9rem',
+					fontWeight: '400'
+				}}
+			>
+				Built with <span role="img" aria-label="heart" style={{ color: 'var(--danger-color)' }}>❤️</span> for placement prep
+			</div>
+		</footer>
 	);
 }

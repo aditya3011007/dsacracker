@@ -6,7 +6,6 @@ import FormControl from 'react-bootstrap/FormControl';
 import Spinner from 'react-bootstrap/Spinner';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import Badge from 'react-bootstrap/Badge';
 import Fade from 'react-reveal/Fade';
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
@@ -17,14 +16,6 @@ import { ThemeContext } from '../../App';
 import Button from 'react-bootstrap/Button';
 
 export default function Topic({ data, updateData }) {
-	/*
-    This component takes data releted to a paticular topic
-    and updateData() from App component
-  */
-	/*
-    Setting state for fields that comes from `data` prop
-    so that `data` prop is not undefined on reload
-  */
 	const [select, setSelected] = useState([]);
 	const [isBookmarkSortFilterSelected, setIsBookmarkSortFilterSelected] = useState(false);
 	const [isSelectedComplete, setSelectedComplete] = useState(true);
@@ -36,7 +27,7 @@ export default function Topic({ data, updateData }) {
 	const [topicName, setTopicName] = useState('');
 
 	const dark = useContext(ThemeContext);
-	// updating states using useEffect with dependency  on `data` prop
+
 	useEffect(() => {
 		if (data !== undefined) {
 			let doneQuestion = [];
@@ -45,40 +36,33 @@ export default function Topic({ data, updateData }) {
 				if (question.Done) {
 					doneQuestion.push(index);
 				}
-				/*
-        |	Hidden properties `_is_selected` and `_search_text` are used to sort the table
-        |	and search the table respectively. react-bootstrap-table does not allow sorting
-        |	by selectRow by default, and requires plain text to perform searches.
-        */
 				return {
 					id: index,
 					question: (
 						<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-							{/* Question link */}
 							<a
 								href={question.URL}
 								target='_blank'
 								rel='noopener noreferrer'
-								style={{ fontWeight: '600', fontSize: '20px' }}
-								className='question-link'
+								className='question-link p-1'
 							>
 								{question.Problem}
 							</a>
 						</div>
 					),
-					links:(
-						<div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap:'10px' }}>
-							{question.URL2.length>0 && <img
+					links: (
+						<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px' }}>
+							{question.URL2.length > 0 && <img
 								src={'https://i.ibb.co/RcQ5qLs/Coding-Ninjas-logo.jpg'}
 								width='30px'
 								height='25px'
 								alt='icon'
-								style={{ float: 'right', cursor: 'pointer' }}
+								style={{ cursor: 'pointer', borderRadius: '4px' }}
 								onClick={() => {
 									window.open(`${question.URL2}&utm_source=website&utm_medium=affiliate&utm_campaign=450dsatracker`, '_blank');
 								}}
 							/>}
-							
+
 							<img
 								src={
 									question.URL.includes('geeksforgeeks')
@@ -88,7 +72,7 @@ export default function Topic({ data, updateData }) {
 								width='30px'
 								height='25px'
 								alt='icon'
-								style={{ float: 'right', cursor: 'pointer' }}
+								style={{ cursor: 'pointer', borderRadius: '4px' }}
 								onClick={() => {
 									window.open(question.URL, '_blank');
 								}}
@@ -96,34 +80,25 @@ export default function Topic({ data, updateData }) {
 						</div>
 					),
 					controls: (
-						<div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
-							{/* <img
-								src={
-									question.URL.includes('geeksforgeeks')
-										? 'https://img.icons8.com/color/24/000000/GeeksforGeeks.png'
-										: 'https://img.icons8.com/external-tal-revivo-color-tal-revivo/24/000000/external-level-up-your-coding-skills-and-quickly-land-a-job-logo-color-tal-revivo.png'
-								}
-								width='30px'
-								height='25px'
-								alt='icon'
-								style={{ float: 'right', cursor: 'pointer' }}
-								onClick={() => {
-									window.open(question.URL, '_blank');
-								}}
-							/> */}
+						<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px' }}>
 							<OverlayTrigger
 								placement='left'
 								overlay={!question.Bookmark ? renderTooltipAddBookmark : renderTooltipRemoveBookmark}
 							>
 								<svg
 									xmlns='http://www.w3.org/2000/svg'
-									width='16'
-									height='16'
+									width='20'
+									height='20'
 									fill='currentColor'
-									class={question.Bookmark === 1 ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'}
+									className={question.Bookmark === 1 ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'}
 									viewBox='0 0 16 16'
-									style={{ float: 'right', color: 'green', cursor: 'pointer', paddingLeft: '1px' }}
-									onClick={() => handleBookmark(index, question)}
+									style={{ color: 'var(--success-color)', cursor: 'pointer', transition: 'transform 0.2s' }}
+									onClick={(e) => {
+										e.stopPropagation();
+										handleBookmark(index, question);
+									}}
+									onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'}
+									onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
 								>
 									{question.Bookmark ? (
 										<path d='M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z' />
@@ -138,13 +113,18 @@ export default function Topic({ data, updateData }) {
 							>
 								<svg
 									xmlns='http://www.w3.org/2000/svg'
-									width='16'
-									height='16'
+									width='20'
+									height='20'
 									fill='currentColor'
-									class={question.Notes && question.Notes.length !== 0 ? 'bi bi-sticky-fill' : 'bi bi-sticky'}
+									className={question.Notes && question.Notes.length !== 0 ? 'bi bi-sticky-fill' : 'bi bi-sticky'}
 									viewBox='0 0 16 16'
-									style={{ float: 'right', color: 'green', cursor: 'pointer' }}
-									onClick={() => shownotes(index)}
+									style={{ color: 'var(--accent-color)', cursor: 'pointer', transition: 'transform 0.2s' }}
+									onClick={(e) => {
+										e.stopPropagation();
+										shownotes(index);
+									}}
+									onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'}
+									onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
 								>
 									{question.Notes && question.Notes.length !== 0 ? (
 										<path d='M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1h-11zm6 8.5a1 1 0 0 1 1-1h4.396a.25.25 0 0 1 .177.427l-5.146 5.146a.25.25 0 0 1-.427-.177V9.5z' />
@@ -167,7 +147,6 @@ export default function Topic({ data, updateData }) {
 		}
 	}, [data]);
 
-	//tooltip functions
 	const renderTooltipAddBookmark = (props) => (
 		<Tooltip {...props} className='in' id='button-tooltip'>
 			Add Bookmark
@@ -204,7 +183,6 @@ export default function Topic({ data, updateData }) {
 		</Tooltip>
 	);
 
-	// seacrh bar config
 	const Sorter = (x) => {
 		if (!x) {
 			setSortMode({
@@ -221,67 +199,60 @@ export default function Topic({ data, updateData }) {
 		}
 		setIsBookmarkSortFilterSelected(!x);
 	};
+
 	const SearchBar = (props) => {
 		const handleChange = (e) => {
 			props.onSearch(e.target.value);
 		};
 		return (
-			<div className='topic-input-container'>
-				<div className='container'>
-					<InputGroup className='mb-4'>
-						<InputGroup.Append>
-							<RandomButton data={data} />
-						</InputGroup.Append>
-						<FormControl
-							className='text-center search-input-container'
-							placeholder='Search Question.. 🔍'
-							aria-label='Search Question'
-							aria-describedby='basic-addon2'
-							onChange={handleChange}
-							style={{ fontSize: '18px', fontWeight: '600' }}
-						/>
-						<InputGroup.Prepend>
-							<Badge
-								variant='success'
-								style={{ borderTopLeftRadius: '0px', borderBottomLeftRadius: '0px', background: 'rgb(200, 230, 201)' }}
-							>
-								<p className='completed-questions' style={{ color: 'black', padding: '8px' }}>
-									<span style={{ fontWeight: 'bold' }}>
-										{data.doneQuestions}/{data.questions.length}
-									</span>{' '}
-									Done{' '}
-									<span className='emojiFix' role='img' aria-label='checker'>
-										&#9989;
-									</span>
-								</p>
-							</Badge>
-						</InputGroup.Prepend>
-						<OverlayTrigger
-							placement='left'
-							overlay={isBookmarkSortFilterSelected ? renderTooltipResetSortBookmark : renderTooltipSortBookmark}
+			<div className='topic-input-container mb-4'>
+				<InputGroup>
+					<InputGroup.Prepend>
+						<RandomButton data={data} />
+					</InputGroup.Prepend>
+					<FormControl
+						className='text-center search-input-container'
+						placeholder='Search Question.. 🔍'
+						aria-label='Search Question'
+						aria-describedby='basic-addon2'
+						onChange={handleChange}
+					/>
+					<InputGroup.Append>
+						<div className='completed-questions'>
+							<span style={{ fontWeight: 'bold' }}>
+								{data.doneQuestions}/{data.questions.length}
+							</span>{' '}
+							<span className="ml-1 d-none d-sm-inline">Done</span>
+							<span className='emojiFix ml-1' role='img' aria-label='checker'>
+								&#9989;
+							</span>
+						</div>
+					</InputGroup.Append>
+					<OverlayTrigger
+						placement='left'
+						overlay={isBookmarkSortFilterSelected ? renderTooltipResetSortBookmark : renderTooltipSortBookmark}
+					>
+						<Button
+							variant={isBookmarkSortFilterSelected ? 'success' : 'outline-success'}
+							className='sort-button'
+							onClick={() => {
+								Sorter(isBookmarkSortFilterSelected);
+							}}
 						>
-							<Button
-								variant={isBookmarkSortFilterSelected ? 'success' : 'outline-success'}
-								className='sort-button'
-								onClick={() => {
-									Sorter(isBookmarkSortFilterSelected);
-								}}
-							>
-								<span className='label-emoji'>🏷️</span>
-							</Button>
-						</OverlayTrigger>
-					</InputGroup>
-				</div>
+							<span className='label-emoji'>🏷️</span>
+						</Button>
+					</OverlayTrigger>
+				</InputGroup>
 			</div>
 		);
 	};
-	// table config
+
 	const columns = [
 		{
 			dataField: 'id',
 			text: 'id',
-			headerStyle: { width: '40px', fontSize: '20px', textAlign: 'center' },
-			style: { fontSize: '20px', cursor: 'pointer', textAlign: 'center' },
+			headerStyle: { width: '40px', textAlign: 'center' },
+			style: { cursor: 'pointer', textAlign: 'center' },
 			events: {
 				onClick: (e, column, columnIndex, row, rowIndex) => {
 					handleSelect(row, !row._is_selected);
@@ -291,47 +262,47 @@ export default function Topic({ data, updateData }) {
 		{
 			dataField: 'question',
 			text: 'Questions',
-			headerStyle: { fontSize: '20px', textAlign: 'center', width: '80%' },
+			headerStyle: { textAlign: 'left', width: '65%' },
 		},
 		{
 			dataField: 'links',
-			text: 'Links',
-			headerStyle: { fontSize: '20px', textAlign: 'center' },
+			text: 'Solve Links',
+			headerStyle: { textAlign: 'center' },
 		},
 		{
 			dataField: 'controls',
-			text: '',
-			headerStyle: { fontSize: '20px', textAlign: 'center' },
+			text: 'Actions',
+			headerStyle: { textAlign: 'center' },
 		},
 		{
 			dataField: '_is_selected',
 			text: 'Is Selected',
-			headerStyle: { fontSize: '20px' },
 			hidden: true,
 			sort: true,
 		},
 		{
 			dataField: '_search_text',
 			text: 'Search Text',
-			headerStyle: { fontSize: '20px' },
 			hidden: true,
 		},
 		{
 			dataField: 'Bookmark',
 			text: 'Bookmark',
-			headerStyle: { fontSize: '20px' },
 			hidden: true,
 		},
 	];
-	const rowStyle = { fontSize: '20px' };
+
 	const selectRow = {
 		mode: 'checkbox',
-		style: { background: dark ? '#393E46' : '#c8e6c9', fontSize: '24px' },
+		style: {
+			background: 'rgba(16, 185, 129, 0.1)',
+			borderLeft: '4px solid var(--success-color)'
+		},
 		selected: select,
 		onSelect: handleSelect,
 		hideSelectAll: true,
 	};
-	// func() triggered when a question is marked done
+
 	function handleSelect(row, isSelect) {
 		let key = topicName.replace(/[^A-Z0-9]+/gi, '_').toLowerCase();
 		let newDoneQuestion = [...select];
@@ -361,7 +332,6 @@ export default function Topic({ data, updateData }) {
 		if (isSelectedComplete) displayToast(isSelect, row.id);
 	}
 
-	// trigger an information message for user on select change
 	function displayToast(isSelect, id) {
 		const { type, icon, dir } = {
 			type: isSelect ? 'Done' : 'Incomplete',
@@ -374,10 +344,10 @@ export default function Topic({ data, updateData }) {
 
 		const Card = (
 			<>
-				<p>
+				<p className="mb-1">
 					{title} <span className='emojiFix'>{icon}</span>
 				</p>
-				<p className='toast-subtitle'>{subTitle}</p>
+				<p className='toast-subtitle mb-0'>{subTitle}</p>
 			</>
 		);
 
@@ -388,18 +358,16 @@ export default function Topic({ data, updateData }) {
 		});
 	}
 
-	//Notes component
 	const NoteSection = (props) => {
 		let id = localStorage.getItem('cid');
-
 		const [quickNotes, setQuickNotes] = useState(data.questions[id]?.Notes);
+
 		const addnewnotes = (event) => {
 			setQuickNotes(event.target.value);
 		};
 
 		const onadd = () => {
 			let key = topicName.replace(/[^A-Z0-9]+/gi, '_').toLowerCase();
-			// let id = localStorage.getItem("cid");
 			if (id) {
 				let que = data.questions;
 				que[id].Notes = quickNotes.trim().length === 0 ? '' : quickNotes.trim();
@@ -413,23 +381,22 @@ export default function Topic({ data, updateData }) {
 					data.position
 				);
 				localStorage.removeItem('cid');
-			} else {
-				saveAndExitNotes();
 			}
+			saveAndExitNotes();
 		};
 
 		return (
 			<>
 				<div className='note-area'>
 					<div className='note-container'>
-						<div className='question-title' style={{ color: 'black' }}></div>
-						<textarea maxLength='432' className='note-section' placeholder='your notes here' onChange={addnewnotes}></textarea>
+						<div className='question-title'>{data.questions[id]?.Problem || 'Notes'}</div>
+						<textarea maxLength='432' className='note-section' placeholder='Write your approach or hints here...' onChange={addnewnotes}></textarea>
 						<div className='button-container'>
 							<button className='note-exit' onClick={saveAndExitNotes}>
 								Close
 							</button>
 							<button className='note-save' onClick={onadd}>
-								Save
+								Save Note
 							</button>
 						</div>
 					</div>
@@ -437,7 +404,7 @@ export default function Topic({ data, updateData }) {
 			</>
 		);
 	};
-	//function for bookmarks
+
 	function handleBookmark(row, quest) {
 		let key = topicName.replace(/[^A-Z0-9]+/gi, '_').toLowerCase();
 		let newDoneQuestion = [...select];
@@ -458,36 +425,85 @@ export default function Topic({ data, updateData }) {
 			},
 			data.position
 		);
-		// console.log(quest.Bookmark)
 	}
-	//function for closing notes
+
 	function saveAndExitNotes() {
-		document.getElementsByClassName('note-section')[0].style.display = 'none';
-		document.getElementsByClassName('note-exit')[0].style.display = 'none';
-		document.getElementsByClassName('note-save')[0].style.display = 'none';
 		document.getElementsByClassName('note-area')[0].style.display = 'none';
 		localStorage.removeItem('cid');
 	}
-	//funtion for taking notes
-	function shownotes(ind) {
-		document.getElementsByClassName('note-section')[0].style.display = 'block';
-		document.getElementsByClassName('note-exit')[0].style.display = 'block';
-		document.getElementsByClassName('note-save')[0].style.display = 'block';
-		document.getElementsByClassName('note-area')[0].style.display = 'block';
 
+	function shownotes(ind) {
+		document.getElementsByClassName('note-area')[0].style.display = 'block';
 		localStorage.setItem('cid', ind);
 		document.getElementsByClassName('note-section')[0].value = data.questions[ind].Notes;
 		document.getElementsByClassName('question-title')[0].innerHTML = data.questions[ind].Problem;
 	}
+
+	const topicInsights = {
+		"Array": { time: "O(1) Access, O(n) Search/Insert/Delete", space: "O(n)", tip: "Two pointers, Sliding window, Hashing are your best friends." },
+		"Matrix": { time: "O(m*n) Traversal", space: "O(1) to O(m*n)", tip: "Think of it as a 2D array or graph. BFS/DFS work great." },
+		"String": { time: "O(n) Traversal", space: "O(n) mostly", tip: "Understand ASCII, Palindromes, KMP, Rabin-Karp, and Tries." },
+		"Search & Sort": { time: "O(n log n) Sort, O(log n) Search", space: "O(1) to O(n)", tip: "Binary Search is the most powerful tool. Divide & Conquer." },
+		"Linked List": { time: "O(n) Traversal, O(1) Insert (if node given)", space: "O(1) usually", tip: "Fast/Slow Pointers (Floyd's Cycle Finding), Dummy Nodes." },
+		"Binary Trees": { time: "O(n) Traversal", space: "O(h) where h is height", tip: "Recursion! Master Inorder, Preorder, Postorder, and Level Order (BFS)." },
+		"BST": { time: "O(h) Search/Insert/Delete", space: "O(h)", tip: "Inorder traversal gives sorted order. Useful for range queries." },
+		"Greedy": { time: "Varies (usually sorting + O(n))", space: "O(1) mostly", tip: "Local optimum leads to global optimum. 'Always pick the best right now'." },
+		"Backtracking": { time: "O(a^n) usually exponential", space: "O(n) recursion depth", tip: "Explore all paths. 'Choose, explore, un-choose' pattern." },
+		"Stacks & Queues": { time: "O(1) Push/Pop", space: "O(n)", tip: "LIFO vs FIFO. Great for Monotonic Stacks, Next Greater Element, BFS." },
+		"Heap": { time: "O(1) Peek, O(log n) Push/Pop", space: "O(n)", tip: "Priority Queues! Top K elements, median in data stream." },
+		"Graph": { time: "O(V + E) BFS/DFS", space: "O(V)", tip: "Adjacency List > Matrix usually. Dijkstra, MST, Topological Sort." },
+		"Trie": { time: "O(L) where L is string length", space: "O(N * L * Alphabet)", tip: "Awesome for Prefix matching, Autocomplete, XOR maximum." },
+		"Dynamic Programming": { time: "Polynomial O(n^2), O(n*W)", space: "O(n) to O(n^2) usually", tip: "Overlapping subproblems + optimal substructure. Memoize or Tabulate." },
+		"Bit Manipulation": { time: "O(1) for built-in, O(bits) loops", space: "O(1)", tip: "XOR properties, bit masking, checking set bits." }
+	};
+
+	const currentInsight = topicInsights[topicName] || { time: "Varies", space: "Varies", tip: "Practice makes perfect!" };
+
 	return (
 		<>
-			<h3 className='text-center mb-4'>
-				<Link to='/'>Topics</Link>/{topicName}
-			</h3>
+			<div className="mb-5">
+				<h3 className='page-heading'>
+					{topicName}
+				</h3>
+				<div className="page-subtitle mb-4">
+					<Link to='/' style={{ color: 'var(--text-secondary-light)', textDecoration: 'none' }}>Topics</Link>
+					<span className="mx-2">/</span>
+					<span style={{ color: 'var(--text-primary-light)', fontWeight: 'bold' }}>{topicName}</span>
+				</div>
+
+				{topicName && (
+					<Fade top distance="20px" duration={500}>
+						<div className="topic-insight-card p-4 mb-4" style={{
+							background: 'rgba(139, 92, 246, 0.05)',
+							borderLeft: '4px solid var(--accent-color)',
+							borderRadius: '0 var(--radius-lg) var(--radius-lg) 0',
+							backdropFilter: 'blur(5px)'
+						}}>
+							<h5 style={{ color: 'var(--text-primary-light)', marginBottom: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+								<span>💡</span> Quick Cheat Sheet
+							</h5>
+							<div className="row">
+								<div className="col-md-4 mb-2 mb-md-0">
+									<strong style={{ color: 'var(--accent-color)' }}>🕒 Time:</strong>
+									<div style={{ color: 'var(--text-secondary-light)', fontSize: '0.9rem' }}>{currentInsight.time}</div>
+								</div>
+								<div className="col-md-4 mb-2 mb-md-0">
+									<strong style={{ color: 'var(--accent-color)' }}>💾 Space:</strong>
+									<div style={{ color: 'var(--text-secondary-light)', fontSize: '0.9rem' }}>{currentInsight.space}</div>
+								</div>
+								<div className="col-md-4">
+									<strong style={{ color: 'var(--accent-color)' }}>🎯 Pro Tip:</strong>
+									<div style={{ color: 'var(--text-secondary-light)', fontSize: '0.9rem' }}>{currentInsight.tip}</div>
+								</div>
+							</div>
+						</div>
+					</Fade>
+				)}
+			</div>
 
 			{data === undefined ? (
-				<div className='d-flex justify-content-center'>
-					<Spinner animation='grow' variant='success' />
+				<div className='d-flex justify-content-center align-items-center' style={{ minHeight: '40vh' }}>
+					<Spinner animation='border' variant='primary' style={{ width: '3rem', height: '3rem' }} />
 				</div>
 			) : (
 				<ToolkitProvider
@@ -495,15 +511,20 @@ export default function Topic({ data, updateData }) {
 					keyField='id'
 					data={questionsTableData}
 					columns={columns}
-					rowStyle={rowStyle}
 					search
 				>
 					{(props) => (
 						<div>
 							<div className='header-rand'>{SearchBar({ ...props.searchProps })}</div>
-							<div className='container container-custom' style={{ overflowAnchor: 'none' }}>
+							<div className='container p-0' style={{ overflowAnchor: 'none', maxWidth: 'var(--table-xl-width)' }}>
 								<Fade duration={600}>
-									<BootstrapTable {...props.baseProps} selectRow={selectRow} sort={sortMode} classes={dark ? 'dark-table' : ''} />
+									<BootstrapTable
+										{...props.baseProps}
+										selectRow={selectRow}
+										sort={sortMode}
+										classes={`table-borderless ${dark ? 'dark-table' : ''}`}
+										wrapperClasses="table-responsive"
+									/>
 								</Fade>
 							</div>
 						</div>

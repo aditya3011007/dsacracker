@@ -2,215 +2,257 @@ import React, { useContext } from "react";
 import Card from "react-bootstrap/Card";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Badge from "react-bootstrap/Badge";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Fade from "react-reveal/Fade";
 import { Link } from "react-router-dom";
+import Tilt from "react-parallax-tilt";
+import { FiBox, FiList, FiTrendingUp, FiLayers, FiActivity, FiFolder, FiCpu, FiGitBranch } from "react-icons/fi";
 import { ThemeContext } from "../../App";
 
 import "./topicCard.css";
 
+// Helper function to map topics to modern minimalist icons
+const getTopicIcon = (name) => {
+  const n = name.toLowerCase();
+  if (n.includes('array')) return <FiLayers size={24} style={{ color: 'var(--accent-color)' }} />;
+  if (n.includes('string')) return <FiList size={24} style={{ color: 'var(--success-color)' }} />;
+  if (n.includes('matrix')) return <FiBox size={24} style={{ color: '#8b5cf6' }} />;
+  if (n.includes('search') || n.includes('sort')) return <FiActivity size={24} style={{ color: '#ef4444' }} />;
+  if (n.includes('tree') || n.includes('graph')) return <FiGitBranch size={24} style={{ color: '#10b981' }} />;
+  if (n.includes('dynamic') || n.includes('greedy')) return <FiCpu size={24} style={{ color: '#f59e0b' }} />;
+  return <FiFolder size={24} style={{ color: 'var(--text-secondary-light)' }} />;
+};
+
 export default function TopicCard({ questionData }) {
   const dark = useContext(ThemeContext);
 
-  // This component takes all the topicsData(here questionData ) and renders a TopicCard Component
-
-  // Utility func() to find the progress in percentage
   const findPercentage = (doneQuestions, totalQuestions) => {
     return Math.round((doneQuestions / totalQuestions) * 100);
   };
 
   let totalSolved = 0;
   let totalQuestions = 0;
-  // Mapping questionData to topicCard array
+
   let topicCard = questionData.map((topic, index) => {
     let { topicName, doneQuestions, questions, started } = topic;
     let percentDone = findPercentage(doneQuestions, questions.length);
     let questionsRemainig = questions.length - doneQuestions;
-    //adding solved questions of every topic to totalSolved
+
     totalSolved += doneQuestions;
     totalQuestions += questions.length;
+
+    // We increase tilt depth for a modern interactive feel
+    const tiltOptions = {
+      tiltMaxAngleX: 4,
+      tiltMaxAngleY: 4,
+      scale: 1.02,
+      transitionSpeed: 2000,
+      glareEnable: true,
+      glareMaxOpacity: 0.15,
+      glarePosition: "all",
+      glareBorderRadius: "var(--radius-xl)"
+    };
+
     if (started) {
       return (
         <Fade duration={500 + index * 0.4} key={index}>
-          <div className="col mb-4">
+          <Tilt {...tiltOptions} className="bento-card-wrapper">
             <Link
-              to={`/${topic.topicName
-                .replace(/[^A-Z0-9]+/gi, "_")
-                .toLowerCase()}`}
+              to={`/${topic.topicName.replace(/[^A-Z0-9]+/gi, "_").toLowerCase()}`}
               style={{ textDecoration: "none" }}
             >
-              <Card
-                className={`mb-3 inprogress-card animate__slideInDown hvr-grow ${dark ? "darkCard" : ""
-                  }`}
-              >
-                <Card.Body>
-                  <Row>
-                    <Col>
-                      <Card.Title className="topicName">
+              <Card className={`topic-card inprogress-card hvr-grow ${questionsRemainig === 0 ? 'magic-border-card' : ''}`}>
+                <Card.Body className="p-0 d-flex flex-column h-100">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div className="d-flex align-items-center gap-2" style={{ gap: '12px' }}>
+                      <div className="icon-wrapper">
+                        {getTopicIcon(topic.topicName)}
+                      </div>
+                      <Card.Title className="topicName m-0">
                         {topic.topicName}
                       </Card.Title>
-                    </Col>
-                    <Col>
-                      <h4>
-                        <Badge
-                          pill
-                          variant="success"
-                          className="float-right"
-                          style={{ fontWeight: "500", cursor: "pointer" }}
-                        >
-                          {questionsRemainig === 0 ? "Done 👏🏻" : "Solve Now 🙇🏻‍♂️"}
-                        </Badge>
-                      </h4>
-                    </Col>
-                  </Row>
-                  <Card.Text className="totalQuestion">
-                    Total Questions {topic.questions.length} <br />
-                    {`${questionsRemainig}`} More to go
-                  </Card.Text>
-                  <p className="percentDone mb-1">
-                    <b>{percentDone}% Done</b>
-                  </p>
-                  <ProgressBar
-                    animated={percentDone === 100 ? false : true}
-                    variant="success"
-                    now={percentDone}
-                  />
+                    </div>
+                    <Badge
+                      pill
+                      className="card-badge"
+                      style={{ backgroundColor: questionsRemainig === 0 ? 'var(--success-color)' : 'var(--accent-color)' }}
+                    >
+                      {questionsRemainig === 0 ? "Done" : "In Progress"}
+                    </Badge>
+                  </div>
+
+                  <div className="flex-grow-1">
+                    <Card.Text className="totalQuestion">
+                      {questions.length} Questions <br />
+                      {questionsRemainig === 0
+                        ? <span style={{ color: 'var(--success-color)' }}>All completed 👏🏻</span>
+                        : <span>{`${questionsRemainig}`} More to go</span>
+                      }
+                    </Card.Text>
+                  </div>
+
+                  <div className="mt-auto d-flex align-items-center justify-content-between">
+                    <div>
+                      <p className="percentDone mb-1" style={{ display: 'block' }}>
+                        <span>Progress</span>
+                      </p>
+                      <span style={{ fontSize: '1.2rem', fontWeight: 700, color: questionsRemainig === 0 ? 'var(--success-color)' : 'var(--accent-color)' }}>
+                        {percentDone}%
+                      </span>
+                    </div>
+
+                    {/* Circular Progress Ring */}
+                    <div style={{ position: 'relative', width: '50px', height: '50px' }}>
+                      <svg width="50" height="50" viewBox="0 0 50 50">
+                        {/* Background track */}
+                        <circle
+                          cx="25"
+                          cy="25"
+                          r="20"
+                          fill="none"
+                          stroke="var(--border-color-light)"
+                          strokeWidth="4"
+                        />
+                        {/* Progress stroke */}
+                        <circle
+                          cx="25"
+                          cy="25"
+                          r="20"
+                          fill="none"
+                          stroke={questionsRemainig === 0 ? 'var(--success-color)' : 'url(#gradient)'}
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          strokeDasharray="125.6"
+                          strokeDashoffset={125.6 - (125.6 * percentDone) / 100}
+                          style={{
+                            transition: 'stroke-dashoffset 1s ease-in-out',
+                            transform: 'rotate(-90deg)',
+                            transformOrigin: '50% 50%'
+                          }}
+                        />
+                        <defs>
+                          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="var(--accent-color)" />
+                            <stop offset="100%" stopColor="#8b5cf6" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </div>
+                  </div>
                 </Card.Body>
               </Card>
             </Link>
-          </div>
+          </Tilt>
         </Fade>
       );
     } else {
       return (
         <Fade duration={500 + index * 50} key={index}>
-          <div className="col mb-4">
+          <Tilt {...tiltOptions} className="bento-card-wrapper">
             <Link
-              to={`/${topic.topicName
-                .replace(/[^A-Z0-9]+/gi, "_")
-                .toLowerCase()}`}
+              to={`/${topic.topicName.replace(/[^A-Z0-9]+/gi, "_").toLowerCase()}`}
               style={{ textDecoration: "none" }}
             >
-              <Card
-                className={`mb-3 notstarted-card hvr-grow ${dark ? "darkCard" : ""
-                  }`}
-              >
-                <Card.Body>
-                  <Row>
-                    <Col>
-                      <Card.Title className="topicName">
-                        {" "}
-                        {topicName}{" "}
+              <Card className={`topic-card notstarted-card hvr-grow`}>
+                <Card.Body className="p-0 d-flex flex-column h-100">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div className="d-flex align-items-center gap-2" style={{ gap: '12px' }}>
+                      <div className="icon-wrapper" style={{ opacity: 0.6 }}>
+                        {getTopicIcon(topic.topicName)}
+                      </div>
+                      <Card.Title className="topicName m-0">
+                        {topicName}
                       </Card.Title>
-                    </Col>
-                    <Col>
-                      <h4>
-                        <Badge
-                          pill
-                          variant="primary"
-                          className="float-right"
-                          style={{ fontWeight: "500", cursor: "pointer" }}
-                        >
-                          Start Now
-                        </Badge>
-                      </h4>
-                    </Col>
-                  </Row>
-                  <Card.Text className="totalQuestion">
-                    Total Questions {questions.length}
-                  </Card.Text>
-                  <p className="percentDone mb-1">
-                    <b>
-                      <i>Not yet started</i>
-                    </b>
-                  </p>
+                    </div>
+                    <Badge
+                      pill
+                      className="card-badge"
+                      style={{ backgroundColor: 'var(--text-secondary-light)' }}
+                    >
+                      Start Here
+                    </Badge>
+                  </div>
+
+                  <div className="flex-grow-1">
+                    <Card.Text className="totalQuestion">
+                      {questions.length} Questions<br />
+                      Not yet started
+                    </Card.Text>
+                  </div>
+
+                  <div className="mt-auto pt-3 d-flex align-items-center justify-content-between">
+                    <div>
+                      <p className="percentDone mb-1" style={{ display: 'block', color: 'var(--text-secondary-light)' }}>
+                        <span>Progress</span>
+                      </p>
+                      <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-secondary-light)' }}>
+                        0%
+                      </span>
+                    </div>
+
+                    {/* Circular Progress Ring (0%) */}
+                    <div style={{ position: 'relative', width: '50px', height: '50px' }}>
+                      <svg width="50" height="50" viewBox="0 0 50 50">
+                        <circle
+                          cx="25"
+                          cy="25"
+                          r="20"
+                          fill="none"
+                          stroke="var(--border-color-light)"
+                          strokeWidth="4"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </Card.Body>
               </Card>
             </Link>
-          </div>
+          </Tilt>
         </Fade>
       );
     }
   });
 
-
-  const promotionTile = (
-    <Fade duration={500 + 1 * 50} key={-1}>
-      <div className="col mb-4">
-        <Link
-          to={{ pathname: "http://bit.ly/425Yel5" }}
-          target="_blank"
-          style={{ textDecoration: "none" }}
-        >
-          <Card
-            className={`mb-3 promotional-card hvr-grow ${dark ? "darkCard" : ""
-              }`}
-          >
-            <Card.Body>
-              <Row style={{ justifyContent: 'center' }}>
-                <Card.Title className="promotional-heading">
-                  {" "}
-                  {"21 Days Challenge 💪"}{" "}
-                </Card.Title>
-              </Row>
-              <Card.Text className="promotional-subtext">
-              Level up your summer with our<br></br>
-                <span style={{fontWeight:700}}>21 Days Beginner Coding Challenge</span>
-                <br></br>
-                for a solid foundation in coding
-              </Card.Text>
-              <h4 className="promotional-cta mb-1">
-                <Badge
-                  pill
-                  variant="primary"
-                  style={{ fontWeight: "700", cursor: "pointer", backgroundColor:"#fa7328" }}
-                >
-                  Start Now 
-                </Badge>
-              </h4>
-            </Card.Body>
-          </Card>
-        </Link>
-      </div>
-    </Fade>
-  );
-
-  topicCard.splice(1, 0, promotionTile)
-
   return (
     <>
-      <h3 className="app-heading2 text-center mb-3">
-        Your Gateway to crack DSA{" "}
-        <span role="img" aria-label="fire">
-          🔥
-        </span>
-      </h3>
+      <div className="text-center mb-5 heroic-header fade-in-section">
+        <h3
+          className="app-heading2 mb-2"
+          style={{ fontSize: '2.5rem', letterSpacing: '-0.03em' }}
+        >
+          Your Gateway to crack DSA{" "}
+          <span
+            role="img" aria-label="fire" className="emojiFix"
+            style={{ display: 'inline-block', animation: 'wobble 2s infinite' }}
+          >🔥</span>
+        </h3>
 
-      <h4 className="text-center mb-4">
-        {totalSolved
-          ? `Total Questions Solved : ${totalSolved} (${(
-            (totalSolved / totalQuestions) *
-            100
-          ).toFixed(2)}% Done)`
-          : "Start Solving"}
-        <p className="percentDone container mt-1">
-          {totalSolved ? (
+        <div
+          className="stats-heading mb-4"
+          style={{ fontSize: '1.2rem' }}
+        >
+          {totalSolved
+            ? `Completed ${totalSolved} out of ${totalQuestions} questions`
+            : "Let's get started on your DSA journey!"}
+        </div>
+
+        {totalSolved > 0 && (
+          <div className="container" style={{ maxWidth: '600px' }}>
             <ProgressBar
               animated={
-                ((totalSolved / totalQuestions) * 100).toFixed(2) === "100"
-                  ? false
-                  : true
+                ((totalSolved / totalQuestions) * 100).toFixed(2) === "100" ? false : true
               }
-              variant="success"
               now={((totalSolved / totalQuestions) * 100).toFixed(2)}
-              style={{ margin: "0.2em 5em" }}
+              style={{ height: '12px', borderRadius: '6px' }}
             />
-          ) : null}
-        </p>
-      </h4>
-      <div className="container container-custom">
-        <div className="row row-cols-1 row-cols-md-3 mt-3 grids">
+            <div className="text-right mt-2" style={{ fontSize: '0.9rem', color: 'var(--text-secondary-light)', fontWeight: 600 }}>
+              {((totalSolved / totalQuestions) * 100).toFixed(1)}% Mastery
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="container container-custom fade-in-section" style={{ animationDelay: '0.2s' }}>
+        <div className="bento-grid mt-3">
           {topicCard}
         </div>
       </div>
