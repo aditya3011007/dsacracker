@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
+import { Library } from 'lucide-react';
 
 const TopicCard = ({ topic, index }) => {
     // 3D Tilt Effect
@@ -74,7 +75,10 @@ const TopicGrid = () => {
     return (
         <div className="max-w-6xl mx-auto px-6 pb-20">
             <h2 className="text-3xl font-display font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/80 mb-8 flex items-center gap-3">
-                <span className="bg-surface-dark p-2 rounded-xl border border-border-color-light text-white">📚</span> DSA Topics
+                <span className="bg-surface-dark p-2 rounded-xl border border-border-color-light text-accent-color">
+                    <Library size={24} />
+                </span>
+                DSA Topics
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" style={{ perspective: "1000px" }}>
                 {data.map((topic, index) => (

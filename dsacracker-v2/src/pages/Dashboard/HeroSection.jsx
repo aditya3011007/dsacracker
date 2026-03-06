@@ -22,9 +22,6 @@ const HeroSection = () => {
             animate="show"
             className="text-center py-20 px-4"
         >
-            <motion.div variants={itemVars} className="inline-block mb-4 px-4 py-1.5 rounded-full bg-accent-color/10 border border-accent-color/20 text-accent-color text-sm font-semibold tracking-wider uppercase">
-                V2 Rebuild 🚀
-            </motion.div>
             <motion.h1
                 variants={itemVars}
                 className="text-5xl md:text-7xl font-display font-bold tracking-tighter mb-6"
