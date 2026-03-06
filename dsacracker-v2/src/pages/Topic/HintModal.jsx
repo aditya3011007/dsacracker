@@ -6,6 +6,8 @@ import { useStore } from '../../store/useStore';
 const HintModal = ({ isOpen, onClose, questionName }) => {
     // 0 = no hints unlocked, 1 = intuition, 2 = approach, 3 = complexity
     const [unlockedLevel, setUnlockedLevel] = useState(0);
+    // Tracks which hint's content is actively expanded (accordion style)
+    const [activeAccordion, setActiveAccordion] = useState(0);
     const [hints, setHints] = useState({ 1: '', 2: '', 3: '' });
     const [isLoading, setIsLoading] = useState(false);
     const token = useStore((state) => state.token);
@@ -15,6 +17,7 @@ const HintModal = ({ isOpen, onClose, questionName }) => {
         if (!isOpen) {
             setTimeout(() => {
                 setUnlockedLevel(0);
+                setActiveAccordion(0);
                 setHints({ 1: '', 2: '', 3: '' });
                 setIsLoading(false);
             }, 300);
@@ -41,10 +44,12 @@ const HintModal = ({ isOpen, onClose, questionName }) => {
 
             setHints(prev => ({ ...prev, [level]: data.text }));
             setUnlockedLevel(level);
+            setActiveAccordion(level);
         } catch (error) {
             console.error("Hint error:", error);
             setHints(prev => ({ ...prev, [level]: "*(Error: Could not connect to the AI Hint Server)*" }));
             setUnlockedLevel(level); // Still unlock so they can see error
+            setActiveAccordion(level);
         } finally {
             setIsLoading(false);
         }
@@ -53,6 +58,7 @@ const HintModal = ({ isOpen, onClose, questionName }) => {
     const HintBox = ({ level, title, description, isNext }) => {
         const isUnlocked = unlockedLevel >= level;
         const isActive = isLoading && isNext;
+        const isExpanded = activeAccordion === level;
 
         return (
             <motion.div
@@ -61,9 +67,15 @@ const HintModal = ({ isOpen, onClose, questionName }) => {
             >
                 {/* Header Row */}
                 <div
-                    className={`flex items-center justify-between p-4 ${!isUnlocked && isNext && !isLoading ? 'cursor-pointer hover:bg-white/5' : ''}`}
+                    className={`flex items-center justify-between p-4 ${isUnlocked ? 'cursor-pointer hover:bg-white/5' : (!isUnlocked && isNext && !isLoading ? 'cursor-pointer hover:bg-white/5' : '')}`}
                     onClick={() => {
-                        if (!isUnlocked && isNext && !isLoading) requestHint(level);
+                        if (isUnlocked) {
+                            // Toggle Accordion if already unlocked
+                            setActiveAccordion(isExpanded ? 0 : level);
+                        } else if (!isUnlocked && isNext && !isLoading) {
+                            // Trigger API if it's the next locked hint
+                            requestHint(level);
+                        }
                     }}
                 >
                     <div className="flex items-center gap-3">
@@ -85,9 +97,9 @@ const HintModal = ({ isOpen, onClose, questionName }) => {
                     )}
                 </div>
 
-                {/* Content Area (Animated Reveal) */}
+                {/* Content Area (Animated Accordion Reveal) */}
                 <AnimatePresence>
-                    {isUnlocked && (
+                    {isUnlocked && isExpanded && (
                         <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
