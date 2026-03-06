@@ -26,7 +26,7 @@ const QuestionList = ({ activeTopic }) => {
                 <motion.h1
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-4xl font-display font-bold text-white mb-2"
+                    className="text-4xl md:text-5xl font-display font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/80 mb-3"
                 >
                     {activeTopic.topicName}
                 </motion.h1>
@@ -66,10 +66,10 @@ const QuestionList = ({ activeTopic }) => {
                                         href={q.URL}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="text-lg font-semibold text-text-primary-light group-hover:text-accent-color transition-colors line-clamp-2 md:line-clamp-1 flex items-center gap-2 w-fit"
+                                        className="text-[1.05rem] font-semibold tracking-tight text-text-primary-light group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-accent-color group-hover:to-blue-400 transition-all duration-300 line-clamp-2 md:line-clamp-1 flex items-center gap-2 w-fit"
                                     >
                                         {q.Problem}
-                                        <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-400" />
                                     </a>
                                 </div>
                             </div>

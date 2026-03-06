@@ -40,7 +40,7 @@ const TopicCard = ({ topic, index }) => {
                     <div className="absolute inset-0 rounded-3xl opacity-50 bg-[conic-gradient(from_90deg_at_50%_50%,#00000000_50%,#10b981_100%)] animate-spin-slow mix-blend-screen pointer-events-none" style={{ maskImage: 'linear-gradient(#000, #000), linear-gradient(#000, #000)', maskClip: 'content-box, border-box', maskComposite: 'exclude', padding: '1px' }} />
                 )}
 
-                <h3 className="text-xl font-display font-bold text-white z-10" style={{ transform: "translateZ(30px)" }}>
+                <h3 className="text-xl font-display font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 group-hover:from-accent-color group-hover:to-blue-400 transition-all duration-300 z-10" style={{ transform: "translateZ(30px)" }}>
                     {topic.topicName}
                 </h3>
 
@@ -73,8 +73,8 @@ const TopicGrid = () => {
 
     return (
         <div className="max-w-6xl mx-auto px-6 pb-20">
-            <h2 className="text-3xl font-display font-bold mb-8 flex items-center gap-3">
-                <span className="bg-surface-dark p-2 rounded-xl border border-border-color-light">📚</span> DSA Topics
+            <h2 className="text-3xl font-display font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/80 mb-8 flex items-center gap-3">
+                <span className="bg-surface-dark p-2 rounded-xl border border-border-color-light text-white">📚</span> DSA Topics
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" style={{ perspective: "1000px" }}>
                 {data.map((topic, index) => (

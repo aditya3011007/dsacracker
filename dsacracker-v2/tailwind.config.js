@@ -19,7 +19,16 @@ export default {
                 surface: {
                     light: 'rgba(255, 255, 255, 0.7)',
                     dark: 'rgba(30, 41, 59, 0.7)',
-                }
+                },
+                'accent-color': 'var(--accent-color)',
+                'success-color': 'var(--success-color)',
+                'danger-color': 'var(--danger-color)',
+                'warning-color': 'var(--warning-color)',
+                'text-primary-light': 'var(--text-primary-light)',
+                'text-secondary-light': 'var(--text-secondary-light)',
+                'bg-color-light': 'var(--bg-color-light)',
+                'bg-color-secondary-light': 'var(--bg-color-secondary-light)',
+                'border-color-light': 'var(--border-color-light)',
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],

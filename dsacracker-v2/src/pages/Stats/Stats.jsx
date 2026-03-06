@@ -38,7 +38,7 @@ const Stats = () => {
             >
                 <div className="mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="text-center md:text-left">
-                        <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+                        <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight text-white mb-4">
                             Analytics <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-color to-blue-500">Center</span>
                         </h1>
                         <p className="text-lg text-text-secondary-light">Visualize your mastery. Analyze your weak points. Dominate DSA.</p>

@@ -14,9 +14,9 @@ const About = () => {
                 About The Project
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-8 leading-tight">
-                Mastering DSA,<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-color to-blue-500">Reimagined.</span>
+            <h1 className="text-5xl md:text-6xl font-display font-extrabold tracking-tighter mb-8 leading-tight">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">Mastering DSA,</span><br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-color via-blue-500 to-cyan-400">Reimagined.</span>
             </h1>
 
             <p className="text-xl text-text-secondary-light leading-relaxed mb-12 max-w-2xl mx-auto">
