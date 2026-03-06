@@ -217,4 +217,47 @@ Strict Rules:
     }
 });
 
+router.post('/search', authMiddleware, async (req, res) => {
+    try {
+        const { query } = req.body;
+
+        if (!query) {
+            return res.status(400).json({ error: 'query is required' });
+        }
+
+        const systemInstruction = `You are a Semantic Search Engine for LeetCode Data Structures and Algorithms problems.
+The user will provide a vague, natural language description of a problem they are trying to find.
+Your ONLY job is to return the exact, canonical name of the closest matching standard LeetCode problem.
+
+Strict Rules:
+1. Output ONLY the problem name. No preamble, no explanation, no quotes. (e.g., "Two Sum", "Trapping Rain Water", "Longest Common Subsequence").
+2. If the user's query is too vague to match a specific problem, return your best guess of the most famous problem that fits the description.
+3. Ignore typos or poor phrasing. Focus on the core algorithmic concept being described.
+`;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [
+                {
+                    role: 'user',
+                    parts: [{ text: `Find the DSA problem matching this description: "${query}"` }]
+                }
+            ],
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.1, // Low temp for deterministic, factual matching
+            }
+        });
+
+        // Clean up the response just in case (remove quotes, newlines, etc.)
+        const problemName = response.text.replace(/["'\n\r]/g, '').trim();
+
+        res.json({ problemName });
+
+    } catch (error) {
+        console.error('Error generating AI search result:', error);
+        res.status(500).json({ error: 'Failed to perform semantic search' });
+    }
+});
+
 module.exports = router;
