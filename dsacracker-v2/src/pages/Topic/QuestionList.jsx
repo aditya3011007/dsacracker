@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Circle, Bookmark, FileText, ExternalLink } from 'lucide-react';
+import { CheckCircle2, Circle, Bookmark, FileText, ExternalLink, BrainCircuit } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { cn } from '../../components/FloatingDock/FloatingDock';
 import NotesModal from './NotesModal';
+import InterviewModal from './InterviewModal';
 
 const QuestionList = ({ activeTopic }) => {
     const toggleQuestionDone = useStore((state) => state.toggleQuestionDone);
@@ -11,6 +12,7 @@ const QuestionList = ({ activeTopic }) => {
     const saveNote = useStore((state) => state.saveNote);
 
     const [editingNoteIndex, setEditingNoteIndex] = React.useState(null);
+    const [interviewingIndex, setInterviewingIndex] = React.useState(null);
 
     if (!activeTopic) return <div className="text-center p-10 font-display">Topic not found.</div>;
 
@@ -81,6 +83,16 @@ const QuestionList = ({ activeTopic }) => {
                                         <CodeIcon />
                                     </a>
                                 )}
+
+                                {/* Interview Me AI Trigger */}
+                                <button
+                                    className="p-2 rounded-lg bg-secondary-color/10 text-secondary-color hover:bg-secondary-color/20 transition-all hover:scale-110 shadow-[0_0_10px_rgba(156,39,176,0.2)] hover:shadow-[0_0_20px_rgba(156,39,176,0.4)]"
+                                    title="FAANG Interview Agent"
+                                    onClick={() => setInterviewingIndex(index)}
+                                >
+                                    <BrainCircuit size={20} />
+                                </button>
+
                                 {/* Add Note */}
                                 <button
                                     className={cn(
@@ -119,6 +131,14 @@ const QuestionList = ({ activeTopic }) => {
                 onSave={(text) => {
                     saveNote(activeTopic.topicName, editingNoteIndex, text);
                 }}
+            />
+
+            {/* AI Interview Modal */}
+            <InterviewModal
+                isOpen={interviewingIndex !== null}
+                onClose={() => setInterviewingIndex(null)}
+                questionName={interviewingIndex !== null ? activeTopic.questions[interviewingIndex].Problem : ''}
+                questionUrl={interviewingIndex !== null ? activeTopic.questions[interviewingIndex].URL : ''}
             />
         </div>
     );

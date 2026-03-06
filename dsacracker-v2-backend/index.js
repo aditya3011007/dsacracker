@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const progressRoutes = require('./routes/progress');
+const aiRoutes = require('./routes/ai');
 
 const app = express();
 const PORT = process.env.PORT || 5005;
@@ -15,6 +16,7 @@ app.use(express.json({ limit: '50mb' })); // Increased limit for large progress 
 // Routes
 app.use('/auth', authRoutes);
 app.use('/api', progressRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Base route for health check
 app.get('/', (req, res) => {
