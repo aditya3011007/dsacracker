@@ -21,7 +21,7 @@ const QuestionList = ({ activeTopic }) => {
     if (!activeTopic) return <div className="text-center p-10 font-display">Topic not found.</div>;
 
     return (
-        <div className="flex-1 max-w-4xl w-full">
+        <div className="flex-1 max-w-6xl w-full">
             <div className="mb-8">
                 <motion.h1
                     initial={{ opacity: 0, y: -20 }}

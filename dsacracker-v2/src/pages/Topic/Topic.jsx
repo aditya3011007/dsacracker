@@ -3,7 +3,6 @@ import { useParams, Navigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import TopicSidebar from './TopicSidebar';
 import QuestionList from './QuestionList';
-import CheatSheet from './CheatSheet';
 import { motion } from 'framer-motion';
 
 const Topic = () => {
@@ -29,7 +28,6 @@ const Topic = () => {
         >
             <TopicSidebar />
             <QuestionList activeTopic={activeTopic} />
-            {activeTopic && <CheatSheet topicName={activeTopic.topicName} />}
         </motion.div>
     );
 };
