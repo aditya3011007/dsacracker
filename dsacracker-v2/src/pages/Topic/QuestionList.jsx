@@ -1,10 +1,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Circle, Bookmark, FileText, ExternalLink, BrainCircuit } from 'lucide-react';
+import { CheckCircle2, Circle, Bookmark, FileText, ExternalLink, BrainCircuit, Lightbulb } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { cn } from '../../components/FloatingDock/FloatingDock';
 import NotesModal from './NotesModal';
 import InterviewModal from './InterviewModal';
+import HintModal from './HintModal';
 
 const QuestionList = ({ activeTopic }) => {
     const toggleQuestionDone = useStore((state) => state.toggleQuestionDone);
@@ -13,6 +14,7 @@ const QuestionList = ({ activeTopic }) => {
 
     const [editingNoteIndex, setEditingNoteIndex] = React.useState(null);
     const [interviewingIndex, setInterviewingIndex] = React.useState(null);
+    const [hintingIndex, setHintingIndex] = React.useState(null);
 
     if (!activeTopic) return <div className="text-center p-10 font-display">Topic not found.</div>;
 
@@ -84,6 +86,15 @@ const QuestionList = ({ activeTopic }) => {
                                     </a>
                                 )}
 
+                                {/* AI Hint Trigger */}
+                                <button
+                                    className="p-2 rounded-lg bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 transition-all hover:scale-110 shadow-[0_0_10px_rgba(234,179,8,0.2)] hover:shadow-[0_0_20px_rgba(234,179,8,0.4)]"
+                                    title="Progressive AI Hints"
+                                    onClick={() => setHintingIndex(index)}
+                                >
+                                    <Lightbulb size={20} />
+                                </button>
+
                                 {/* Interview Me AI Trigger */}
                                 <button
                                     className="p-2 rounded-lg bg-secondary-color/10 text-secondary-color hover:bg-secondary-color/20 transition-all hover:scale-110 shadow-[0_0_10px_rgba(156,39,176,0.2)] hover:shadow-[0_0_20px_rgba(156,39,176,0.4)]"
@@ -139,6 +150,13 @@ const QuestionList = ({ activeTopic }) => {
                 onClose={() => setInterviewingIndex(null)}
                 questionName={interviewingIndex !== null ? activeTopic.questions[interviewingIndex].Problem : ''}
                 questionUrl={interviewingIndex !== null ? activeTopic.questions[interviewingIndex].URL : ''}
+            />
+
+            {/* AI Hint Modal */}
+            <HintModal
+                isOpen={hintingIndex !== null}
+                onClose={() => setHintingIndex(null)}
+                questionName={hintingIndex !== null ? activeTopic.questions[hintingIndex].Problem : ''}
             />
         </div>
     );

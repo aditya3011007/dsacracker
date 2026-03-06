@@ -81,4 +81,53 @@ ${userCode ? userCode : '(Candidate has not written any code yet)'}
     }
 });
 
+router.post('/hint', authMiddleware, async (req, res) => {
+    try {
+        const { questionName, hintLevel } = req.body;
+
+        if (!questionName || !hintLevel) {
+            return res.status(400).json({ error: 'questionName and hintLevel are required' });
+        }
+
+        let hintPrompt = "";
+        if (hintLevel === 1) {
+            hintPrompt = "Provide a high-level semantic intuition or real-world analogy for how to approach this problem. Do not mention specific algorithms yet.";
+        } else if (hintLevel === 2) {
+            hintPrompt = "Suggest the algorithmic approach or pattern (e.g., sliding window, two-pointer, BFS) that best solves this problem. Explain briefly why it fits.";
+        } else {
+            hintPrompt = "Detail the target Time and Space complexity for the optimal solution, and explicitly state which Data Structures should be used.";
+        }
+
+        const systemInstruction = `You are an AI teaching assistant helping a student with the Data Structures & Algorithms problem: "${questionName}".
+        
+Strict Rules:
+1. DO NOT write or provide any code. EVER.
+2. Keep your response extremely concise (2-4 sentences maximum).
+3. Directly answer the user's request for Hint Level ${hintLevel}.
+4. Format using Markdown if necessary.
+
+Student Request: ${hintPrompt}`;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [
+                {
+                    role: 'user',
+                    parts: [{ text: "Please give me the hint." }]
+                }
+            ],
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.4, // Lower temp for more direct answers
+            }
+        });
+
+        res.json({ text: response.text });
+
+    } catch (error) {
+        console.error('Error generating AI hint:', error);
+        res.status(500).json({ error: 'Failed to generate hint' });
+    }
+});
+
 module.exports = router;
