@@ -175,4 +175,46 @@ ${userCode}
     }
 });
 
+router.post('/syllabus', authMiddleware, async (req, res) => {
+    try {
+        const { progressSummary } = req.body;
+
+        if (!progressSummary) {
+            return res.status(400).json({ error: 'progressSummary is required' });
+        }
+
+        const systemInstruction = `You are an elite Data Structures & Algorithms (DSA) Mentor and Staff Engineer. 
+The user is providing you with a summary of their current progress across various DSA topics. 
+Your goal is to generate a highly personalized, actionable "Smart Syllabus" or "Study Masterplan" for them.
+
+Strict Rules:
+1. Analyze their provided progress. Point out their specific strengths (topics they've completed mostly/fully) and their weak points (topics they haven't touched or have bookmarked heavily).
+2. Recommend exactly WHICH 2-3 topics they should focus on next, and provide a 1-sentence explanation of WHY (e.g., "You need to master Trees before tackling Graphs"). 
+3. Maintain an encouraging, mentorship-oriented, and professional tone.
+4. Format your response cleanly and beautifully in Markdown using headers (##), bullet points, and bold text for emphasis. Do not use raw HTML.
+5. Keep the entire masterplan concise, to the point, and under 300 words.
+`;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [
+                {
+                    role: 'user',
+                    parts: [{ text: `Here is my current DSA progress summary:\n${progressSummary}\n\nPlease generate my personalized study masterplan.` }]
+                }
+            ],
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.5, // Balanced for structured but slightly creative advice
+            }
+        });
+
+        res.json({ text: response.text });
+
+    } catch (error) {
+        console.error('Error generating AI syllabus:', error);
+        res.status(500).json({ error: 'Failed to generate syllabus' });
+    }
+});
+
 module.exports = router;
