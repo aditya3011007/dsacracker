@@ -130,4 +130,49 @@ Student Request: ${hintPrompt}`;
     }
 });
 
+router.post('/roast', authMiddleware, async (req, res) => {
+    try {
+        const { questionName, userCode } = req.body;
+
+        if (!questionName || !userCode) {
+            return res.status(400).json({ error: 'questionName and userCode are required' });
+        }
+
+        const systemInstruction = `You are a hilariously savage "Gordon Ramsay of Software Engineering". 
+Your job is to absolutely ROAST the user's provided code for the problem: "${questionName}".
+
+Strict Rules:
+1. BE BRUTAL, sarcastic, and funny. Tear apart their variable names, their formatting, their brute-force loops, and their overall life choices.
+2. DO NOT just insult them blindly—your roast MUST be technically accurate based on the actual code they wrote (e.g., if it's O(N^2), roast them for melting the CPU).
+3. At the very end, drop the act for exactly ONE sentence and give them a genuine, useful tip on how it should actually be solved optimally.
+4. Format your response cleanly in Markdown (use \`backticks\` for code snippets, maybe some 🔥 emojis).
+
+Here is the "meal" (code) the candidate served you:
+\`\`\`
+${userCode}
+\`\`\`
+`;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [
+                {
+                    role: 'user',
+                    parts: [{ text: "Chef, I have prepared my code. Please review it." }]
+                }
+            ],
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.9, // Higher temp for more creative/savage roasts
+            }
+        });
+
+        res.json({ text: response.text });
+
+    } catch (error) {
+        console.error('Error generating AI roast:', error);
+        res.status(500).json({ error: 'Failed to generate roast' });
+    }
+});
+
 module.exports = router;

@@ -1,11 +1,12 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Circle, Bookmark, FileText, ExternalLink, BrainCircuit, Lightbulb } from 'lucide-react';
+import { CheckCircle2, Circle, Bookmark, FileText, ExternalLink, BrainCircuit, Lightbulb, Flame } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { cn } from '../../components/FloatingDock/FloatingDock';
 import NotesModal from './NotesModal';
 import InterviewModal from './InterviewModal';
 import HintModal from './HintModal';
+import RoastModal from './RoastModal';
 
 const QuestionList = ({ activeTopic }) => {
     const toggleQuestionDone = useStore((state) => state.toggleQuestionDone);
@@ -15,6 +16,7 @@ const QuestionList = ({ activeTopic }) => {
     const [editingNoteIndex, setEditingNoteIndex] = React.useState(null);
     const [interviewingIndex, setInterviewingIndex] = React.useState(null);
     const [hintingIndex, setHintingIndex] = React.useState(null);
+    const [roastingIndex, setRoastingIndex] = React.useState(null);
 
     if (!activeTopic) return <div className="text-center p-10 font-display">Topic not found.</div>;
 
@@ -95,6 +97,15 @@ const QuestionList = ({ activeTopic }) => {
                                     <Lightbulb size={20} />
                                 </button>
 
+                                {/* AI Roast Trigger */}
+                                <button
+                                    className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all hover:scale-110 shadow-[0_0_10px_rgba(239,68,68,0.2)] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]"
+                                    title="Roast My Code"
+                                    onClick={() => setRoastingIndex(index)}
+                                >
+                                    <Flame size={20} />
+                                </button>
+
                                 {/* Interview Me AI Trigger */}
                                 <button
                                     className="p-2 rounded-lg bg-secondary-color/10 text-secondary-color hover:bg-secondary-color/20 transition-all hover:scale-110 shadow-[0_0_10px_rgba(156,39,176,0.2)] hover:shadow-[0_0_20px_rgba(156,39,176,0.4)]"
@@ -157,6 +168,13 @@ const QuestionList = ({ activeTopic }) => {
                 isOpen={hintingIndex !== null}
                 onClose={() => setHintingIndex(null)}
                 questionName={hintingIndex !== null ? activeTopic.questions[hintingIndex].Problem : ''}
+            />
+
+            {/* AI Roast Modal */}
+            <RoastModal
+                isOpen={roastingIndex !== null}
+                onClose={() => setRoastingIndex(null)}
+                questionName={roastingIndex !== null ? activeTopic.questions[roastingIndex].Problem : ''}
             />
         </div>
     );
